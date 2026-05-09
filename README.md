@@ -1,6 +1,6 @@
 # Voxelizer
 
-A C++ library and ROS 2 node that demonstrates **voxel-based point cloud downsampling** and **voxel map construction**. The core idea is straightforward: space is divided into a regular 3D grid of cubes (voxels), and the voxel size directly controls the resolution of the resulting point cloud — larger voxels mean more aggressive downsampling.
+A C++ library and ROS 2 node that demonstrates **voxel-based point cloud downsampling** and **voxel map construction**. The core idea is straightforward: space is divided into a regular 3D grid of cubes (voxels), and the voxel size directly controls the resolution of the resulting point cloud.
 
 ---
 
@@ -23,19 +23,17 @@ A **voxel map** is a sparse hash map from voxel keys to lists of points. Unlike 
 
 ---
 
-## C++ Library (`cpp/voxelizer`)
+## C++ Library
 
 ### Build
 
 ```bash
 make build-voxelizer
-# or manually:
-cd cpp/voxelizer && mkdir -p build && cd build && cmake .. && make
 ```
 
 ---
 
-## ROS 2 Node (`ros/src/voxelizer_ros`)
+## ROS 2 Node
 
 The `voxelizer_node` wraps the C++ library into a ROS 2 node that subscribes to a raw LiDAR point cloud, downsamples it, and republishes the result.
 
