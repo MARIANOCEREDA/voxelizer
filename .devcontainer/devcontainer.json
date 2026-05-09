@@ -1,0 +1,38 @@
+{
+    "name": "Dev Container ROS2 Jazzy Dev",
+    "dockerComposeFile": [
+        "../docker/docker-compose.yaml"
+    ],
+    "service": "ros-jazzy-dev",
+    "workspaceFolder": "/home/dev/ws",
+    "shutdownAction": "stopCompose",
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/home/dev/ws,type=bind,consistency=cached",
+        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
+        "source=/dev,target=/dev,type=bind,consistency=cached",
+        "source=/home/mcereda/ws/rosbag_dataset,target=/home/dev/ws/dataset,type=bind,consistency=cached"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools",
+                "ms-vscode.cmake-tools",
+                "ms-python.vscode-pylance",
+                "nonanonno.vscode-ros2",
+                "smilerobotics.urdf",
+                "redhat.vscode-xml",
+                "donjayamanne.githistory",
+                "github.copilot",
+                "ms-python.python",
+                "ms-azuretools.vscode-docker",
+                "eamodio.gitlens"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "locale": "en"
+            }
+        }
+    },
+    "remoteUser": "dev",
+    "postCreateCommand": "echo 'Devcontainer ready 🚀'"
+}
