@@ -11,13 +11,18 @@ namespace voxelizer_ros
         : Node("voxelizer_node", options)
     {
         this->declare_parameter("voxel_size", 0.5);
+        this->declare_parameter("input_pcl_topic", "/points");
+        this->declare_parameter("downsampled_pcl_topic", "downsampled_cloud");
+
         voxel_size_ = this->get_parameter("voxel_size").as_double();
+        const auto input_topic = this->get_parameter("input_pcl_topic").as_string();
+        const auto output_topic = this->get_parameter("downsampled_pcl_topic").as_string();
 
         pcl_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-            "/points", 10,
+            input_topic, 10,
             std::bind(&VoxelizerNode::PointCloudCallback, this, std::placeholders::_1));
 
-        downsampled_pcl_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("downsampled_cloud", 10);
+        downsampled_pcl_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(output_topic, 10);
 
         RCLCPP_INFO(this->get_logger(), "Voxelizer_node has been initialized with voxel_size=%.3f", voxel_size_);
     }
@@ -34,6 +39,7 @@ namespace voxelizer_ros
             points.emplace_back(pt.x, pt.y, pt.z);
 
         const auto downsampled = voxelizer::Voxel::DownsampleVoxel(points, voxel_size_);
+        const auto num_points = downsampled.size();
 
         RCLCPP_INFO(this->get_logger(), "Downsampled from %zu to %zu points. Voxel Size [%f]", pcl_cloud.size(), num_points, voxel_size_);
 
