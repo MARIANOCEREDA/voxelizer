@@ -6,8 +6,6 @@
 
 #include <Eigen/Dense>
 
-#include <tsl/robin_map.h>
-
 namespace voxelizer
 {
     /// @brief Alias for a single 3D point in double precision.
@@ -69,6 +67,14 @@ namespace voxelizer
          * @return Downsampled point cloud with at most one point per voxel.
          */
         static VoxelPoints DownsampleVoxel(const VoxelPoints &points, const double voxel_size);
+
+        /**
+         * @brief Downsamples a set of points in parallel by retaining one representative point per voxel.
+         * @param points Input point cloud to downsample.
+         * @param voxel_size Side length of each voxel in meters.
+         * @return Downsampled point cloud with at most one point per voxel.
+         */
+        static VoxelPoints DownsampleVoxelParallel(const VoxelPoints &points, const double voxel_size);
 
     private:
         Eigen::Vector3i position_; ///< Discrete grid coordinates of the voxel.

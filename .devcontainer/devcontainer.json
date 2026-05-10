@@ -9,7 +9,6 @@
     "mounts": [
         "source=${localWorkspaceFolder},target=/home/dev/ws,type=bind,consistency=cached",
         "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
-        "source=/dev,target=/dev,type=bind,consistency=cached",
         "source=/home/mcereda/ws/rosbag_dataset,target=/home/dev/ws/dataset,type=bind,consistency=cached"
     ],
     "customizations": {

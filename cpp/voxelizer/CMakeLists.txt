@@ -5,11 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Eigen3 REQUIRED)
-
-# Include Fetch content for robin-map
-include(FetchContent)
-FetchContent_Declare(tessil SYSTEM URL https://github.com/Tessil/robin-map/archive/refs/tags/v1.4.0.tar.gz)
-FetchContent_MakeAvailable(tessil)
+find_package(TBB REQUIRED)
 
 set(
     SOURCES
@@ -28,4 +24,4 @@ include_directories(include)
 add_library(voxelizer STATIC)
 target_sources(voxelizer PRIVATE ${SOURCES} ${HEADERS})
 target_include_directories(voxelizer PUBLIC include)
-target_link_libraries(voxelizer PUBLIC Eigen3::Eigen robin_map)
+target_link_libraries(voxelizer PUBLIC Eigen3::Eigen  TBB::tbb)

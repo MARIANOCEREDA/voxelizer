@@ -16,6 +16,8 @@ namespace voxelizer_ros
         void PointCloudCallback(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
         
         double voxel_size_;
+        bool use_parallel_;
+        bool profile_;
 
         rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr pcl_sub_;
         rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pcl_pub_;

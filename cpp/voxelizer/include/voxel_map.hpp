@@ -3,7 +3,6 @@
 #include <vector>
 
 #include <Eigen/Dense>
-#include <tsl/robin_map.h>
 
 #include "voxel.hpp"
 
@@ -22,12 +21,10 @@ namespace voxelizer
             /**
              * @brief Constructs a VoxelMap with the given spatial parameters.
              * @param voxel_size Side length of each voxel in meters.
-             * @param dimensions Reserved for future use (e.g. bounding box of the map).
              * @param max_pts_per_voxel Maximum number of points stored per voxel.
              */
             explicit VoxelMap(
                 double voxel_size,
-                const Eigen::Vector3i& dimensions,
                 const int max_pts_per_voxel
             ) : 
                 voxel_size_(voxel_size),
@@ -71,6 +68,6 @@ namespace voxelizer
         private:
             double voxel_size_;       ///< Side length of each voxel in meters.
             int max_pts_per_voxel_;   ///< Maximum number of points allowed per voxel.
-            tsl::robin_map<Voxel, VoxelPoints> grid_; ///< Sparse hash map of voxels to their points.
+            std::unordered_map<Voxel, VoxelPoints> grid_; ///< Sparse hash map of voxels to their points.
     };
 }

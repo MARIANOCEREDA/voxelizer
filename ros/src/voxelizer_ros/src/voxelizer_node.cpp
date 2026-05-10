@@ -13,10 +13,14 @@ namespace voxelizer_ros
         this->declare_parameter("voxel_size", 0.5);
         this->declare_parameter("input_pcl_topic", "/points");
         this->declare_parameter("downsampled_pcl_topic", "downsampled_cloud");
+        this->declare_parameter("use_parallel", true);
+        this->declare_parameter("profile", false);
 
         voxel_size_ = this->get_parameter("voxel_size").as_double();
         const auto input_topic = this->get_parameter("input_pcl_topic").as_string();
         const auto output_topic = this->get_parameter("downsampled_pcl_topic").as_string();
+        use_parallel_ = this->get_parameter("use_parallel").as_bool();
+        profile_ = this->get_parameter("profile").as_bool();
 
         pcl_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
             input_topic, 10,
@@ -38,10 +42,18 @@ namespace voxelizer_ros
         for (const auto &pt : pcl_cloud.points)
             points.emplace_back(pt.x, pt.y, pt.z);
 
-        const auto downsampled = voxelizer::Voxel::DownsampleVoxel(points, voxel_size_);
+        voxelizer::VoxelPoints downsampled;
+        if (use_parallel_) {
+            downsampled = voxelizer::Voxel::DownsampleVoxelParallel(points, voxel_size_);
+        } else {
+            downsampled = voxelizer::Voxel::DownsampleVoxel(points, voxel_size_);
+        }
+        
         const auto num_points = downsampled.size();
-
-        RCLCPP_INFO(this->get_logger(), "Downsampled from %zu to %zu points. Voxel Size [%f]", pcl_cloud.size(), num_points, voxel_size_);
+        RCLCPP_INFO(
+            this->get_logger(),
+            "Downsampled from %zu to %zu points. Voxel Size [%f]", pcl_cloud.size(), num_points, voxel_size_
+        );
 
         pcl::PointCloud<pcl::PointXYZ> output_cloud;
         output_cloud.reserve(downsampled.size());
@@ -59,7 +71,16 @@ namespace voxelizer_ros
 
     void VoxelizerNode::PointCloudCallback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
     {
+        std::chrono::high_resolution_clock::time_point start_time;
+        if (profile_) {
+            start_time = std::chrono::high_resolution_clock::now();
+        }
         const auto downsampled = DownsamplePointCloud(msg);
+        if (profile_) {
+            auto end_time = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
+            RCLCPP_INFO(this->get_logger(), "Total processing time: %ld ms", duration);
+        }
         downsampled_pcl_pub_->publish(downsampled);
     }
 }
